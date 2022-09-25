@@ -1,14 +1,25 @@
 package apiserver
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
 
+	"github.com/gin-gonic/gin"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/teamen/kays/internal/apiserver/config"
+	"github.com/teamen/kays/internal/apiserver/options"
+	"github.com/teamen/kays/internal/apiserver/store/mysql"
 )
 
 var cfgFile string
@@ -62,9 +73,9 @@ func initConfig() {
 	viper.SetConfigType("yaml")
 
 	viper.AutomaticEnv()
-	// viper.SetEnvPrefix("KAYS")
-
-	viper.SetEnvKeyReplacer(strings.NewReplacer("_", "."))
+	viper.SetEnvPrefix("KAYS")
+	replacer := strings.NewReplacer(".", "_")
+	viper.SetEnvKeyReplacer(replacer)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -79,7 +90,56 @@ func initConfig() {
 
 func run() error {
 
-	host := viper.GetString("mysql.host")
-	fmt.Println(host)
+	settings := viper.AllSettings()
+
+	opts := options.NewOptions()
+	mapstructure.Decode(settings["mysql"], opts.MySQLOptions)
+
+	config, _ := config.CreateConfigFromOptions(opts)
+
+	// init mysql store
+	mysqlStore, _ := mysql.GetMySQLFactoryOr(config.MySQLOptions)
+	defer mysqlStore.Close()
+
+	runMode := viper.GetString("run_mode")
+	serverAddr := viper.GetString("addr")
+	// init gin
+	gin.SetMode(runMode)
+
+	// New a new blank Engine instance without any middleware attached.
+	g := gin.New()
+
+	loadRouter(g)
+	// set route and middleware
+
+	srv := &http.Server{
+		Addr:    serverAddr,
+		Handler: g,
+	}
+
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+
+	<-quit
+	log.Println("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown: ", err)
+	}
+
+	log.Println("Server exiting")
+
+	// e := gin.New()
+
 	return nil
 }

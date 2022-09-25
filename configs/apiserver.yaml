@@ -1,8 +1,14 @@
+runmode: debug               # 开发模式, debug, release, test
+addr: :8080
+tls:
+  addr: 443
+  cert:
+  key:
 mysql:
   host: ${MARIADB_HOST} # MySQL 机器 ip 和端口，默认 127.0.0.1:3306
   username: ${MARIADB_USERNAME} # MySQL 用户名(建议授权最小权限集)
   password: ${MARIADB_PASSWORD} # MySQL 用户密码
-  database: ${MARIADB_DATABASE} # iam 系统所用的数据库名
+  database: ${MARIADB_DATABASE} # goserver 系统所用的数据库名
   max-idle-connections: 100 # MySQL 最大空闲连接数，默认 100
   max-open-connections: 100 # MySQL 最大打开的连接数，默认 100
   max-connection-life-time: 10s # 空闲连接最大存活时间，默认 10s
