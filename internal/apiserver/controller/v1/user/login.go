@@ -1,10 +1,14 @@
 package user
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 type LoginRequest struct {
-	username string `json:"username"`
-	password string `json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func (u *UserController) Login(ctx *gin.Context) {
@@ -12,12 +16,12 @@ func (u *UserController) Login(ctx *gin.Context) {
 	var r LoginRequest
 
 	if err := ctx.ShouldBindJSON(&r); err != nil {
-		ctx.JSON(200, &gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	ctx.JSON(200, &gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"message": "success",
 	})
 }

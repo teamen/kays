@@ -15,4 +15,14 @@ func installController(g *gin.Engine) {
 	userController := user.NewUserController()
 
 	g.POST("/login", userController.Login)
+
+	v1 := g.Group("v1")
+	{
+		userV1 := v1.Group("users")
+		{
+			userV1.POST("", userController.Create)
+
+		}
+	}
+
 }
