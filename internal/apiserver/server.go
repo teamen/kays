@@ -20,6 +20,7 @@ import (
 	"github.com/teamen/kays/internal/apiserver/config"
 	"github.com/teamen/kays/internal/apiserver/options"
 	"github.com/teamen/kays/internal/apiserver/store/mysql"
+	"github.com/teamen/kays/internal/pkg/validation"
 )
 
 var cfgFile string
@@ -111,6 +112,8 @@ func run() error {
 
 	loadRouter(g)
 	// set route and middleware
+
+	validation.RegisterTranslations()
 
 	srv := &http.Server{
 		Addr:    serverAddr,
