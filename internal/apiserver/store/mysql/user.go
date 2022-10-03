@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"fmt"
+	"context"
 
 	"gorm.io/gorm"
 
@@ -18,12 +18,6 @@ func newUser(ds *datastore) *users {
 	}
 }
 
-func (u *users) Create() error {
-	fmt.Print("here is create")
-
-	userModel := new(v1.User)
-	// fmt.Println(userModel)
-	u.db.AutoMigrate(userModel)
-
-	return nil
+func (u *users) Create(ctx context.Context, user *v1.User) error {
+	return u.db.Model(&user).Omit("LastLoginIp", "LastLoginAt").Create(&user).Error
 }

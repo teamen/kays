@@ -3,6 +3,7 @@ package apiserver
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/user"
+	"github.com/teamen/kays/internal/apiserver/store/mysql"
 )
 
 func loadRouter(g *gin.Engine) {
@@ -12,7 +13,8 @@ func loadRouter(g *gin.Engine) {
 
 func installController(g *gin.Engine) {
 
-	userController := user.NewUserController()
+	storeIns, _ := mysql.GetMySQLFactoryOr(nil)
+	userController := user.NewUserController(storeIns)
 
 	g.POST("/login", userController.Login)
 

@@ -16,5 +16,5 @@ type User struct {
 	LastLoginAt   time.Time    `gorm:"column:last_login_at;precision:2;comment:最近登录时间" json:"last_login_at"`
 	CreatedAt     time.Time    `gorm:"column:created_at;type:timestamp null;" json:"created_at,omitempty"`
 	UpdatedAt     time.Time    `gorm:"column:updated_at;type:timestamp null;" json:"updated_at,omitempty"`
-	DeletedAt     sql.NullTime `gorm:"column:deleted_at;type:timestamp null;" json:"deleted_at,omitempty"`
+	DeletedAt     sql.NullTime `gorm:"column:deleted_at;type:timestamp null;" json:"-"`
 }
