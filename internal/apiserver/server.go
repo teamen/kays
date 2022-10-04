@@ -21,6 +21,7 @@ import (
 	"github.com/teamen/kays/internal/apiserver/options"
 	"github.com/teamen/kays/internal/apiserver/store/mysql"
 	"github.com/teamen/kays/internal/pkg/validation"
+	"github.com/teamen/kays/pkg/token"
 )
 
 var cfgFile string
@@ -101,6 +102,11 @@ func run() error {
 	// init mysql store
 	mysqlStore, _ := mysql.GetMySQLFactoryOr(config.MySQLOptions)
 	defer mysqlStore.Close()
+
+	// init JWT
+	signingSecret := viper.GetString("jwt_secret")
+	token.Init(signingSecret)
+	fmt.Println(signingSecret)
 
 	runMode := viper.GetString("run_mode")
 	serverAddr := viper.GetString("addr")

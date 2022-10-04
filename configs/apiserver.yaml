@@ -1,5 +1,6 @@
 runmode: debug               # 开发模式, debug, release, test
 addr: :8080
+jwt_secret: {JWT_SECRET}
 tls:
   addr: 443
   cert:
