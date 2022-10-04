@@ -8,4 +8,5 @@ import (
 
 type UserStore interface {
 	Create(ctx context.Context, user *v1.User) error
+	FindByUsername(ctx context.Context, username string) (*v1.User, error)
 }
