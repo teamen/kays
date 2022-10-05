@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -66,4 +67,14 @@ func Init(signingSecret string) {
 			config.signingSecret = signingSecret
 		}
 	})
+}
+
+func ParseRequest(ctx *gin.Context) (int, string, error) {
+	header := ctx.Request.Header.Get("Authorization")
+	if len(header) == 0 {
+		return 0, "", fmt.Errorf("the length of the `Authorization` header is zero")
+	}
+	var tokenString string
+	fmt.Sscanf(header, "Bearer %s", &tokenString)
+	return Parse(tokenString)
 }
