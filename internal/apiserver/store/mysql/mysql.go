@@ -14,6 +14,10 @@ type datastore struct {
 	db *gorm.DB
 }
 
+func (ds *datastore) DB() *gorm.DB {
+	return ds.db
+}
+
 func (ds *datastore) Close() error {
 	if ds.db == nil {
 		return nil

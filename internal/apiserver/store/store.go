@@ -1,10 +1,14 @@
 package store
 
+import "gorm.io/gorm"
+
 var client Factory
 
 type Factory interface {
 	Users() UserStore
 	Close() error
+
+	DB() *gorm.DB
 }
 
 func Client() Factory {
