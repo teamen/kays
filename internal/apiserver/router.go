@@ -6,7 +6,9 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 
+	"github.com/teamen/kays/internal/apiserver/controller/v1/category"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/user"
+
 	"github.com/teamen/kays/internal/apiserver/store/mysql"
 	"github.com/teamen/kays/internal/pkg/constant"
 	"github.com/teamen/kays/pkg/token"
@@ -20,7 +22,9 @@ func loadRouter(g *gin.Engine) {
 func installController(g *gin.Engine) {
 
 	storeIns, _ := mysql.GetMySQLFactoryOr(nil)
+
 	userController := user.NewUserController(storeIns)
+	categoryController := category.NewCategoryController(storeIns)
 
 	g.POST("/login", userController.Login)
 
@@ -28,12 +32,17 @@ func installController(g *gin.Engine) {
 
 	e := initializeCasbin()
 
-	v1.Use(authMiddleware(), permissionMiddleware(e))
+	v1.Use(authMiddleware())
 	{
-		userV1 := v1.Group("users")
+		userV1 := v1.Group("users").Use(permissionMiddleware(e))
 		{
 			userV1.POST("", userController.Create)
 
+		}
+
+		categoryV1 := v1.Group("categories")
+		{
+			categoryV1.POST("", categoryController.Create)
 		}
 	}
 
