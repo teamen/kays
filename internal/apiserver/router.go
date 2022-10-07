@@ -72,7 +72,7 @@ func permissionMiddleware(enforcer *casbin.Enforcer) gin.HandlerFunc {
 			return
 		}
 
-		path := ctx.Request.URL.Path
+		path := ctx.Request.URL.RequestURI()
 		action := ctx.Request.Method
 		hasPermission, err := enforcer.Enforce(username, path, action)
 		if err != nil {
