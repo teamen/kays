@@ -3,8 +3,8 @@ package code
 // 通用: 基本错误
 // Code must start with 1xxxxx
 const (
-	// ErrSuccess - 200: OK.
-	ErrSuccess int = iota + 100001
+	// OK - 200: OK.
+	OK int = iota + 100000
 
 	// ErrUnknown - 500: Internal server error.
 	ErrUnknown

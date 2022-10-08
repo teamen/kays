@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/marmotedu/errors"
+	"github.com/teamen/kays/pkg/code"
 )
 
 type Response struct {
@@ -23,6 +24,10 @@ func WriteResponse(ctx *gin.Context, err error, data interface{}) {
 		})
 		return
 	}
-
-	ctx.JSON(http.StatusOK, Response{Data: data})
+	ctx.JSON(http.StatusOK, Response{
+		Code:    code.OK,
+		Message: "OK",
+		Data:    data,
+	})
+	return
 }

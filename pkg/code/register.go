@@ -1,9 +1,10 @@
 package code
 
 func init() {
+	register(OK, 200, "OK")
+
 	register(ErrUserNotFound, 404, "User not found")
 	register(ErrUserAlreadyExist, 400, "User already exist")
-	register(ErrSuccess, 200, "OK")
 	register(ErrUnknown, 500, "Internal server error")
 	register(ErrBind, 400, "Error occurred while binding the request body to the struct")
 	register(ErrValidation, 400, "Validation failed")
