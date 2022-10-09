@@ -32,6 +32,8 @@ func installController(g *gin.Engine) {
 
 	e := initializeCasbin()
 
+	// e.AddRoleForUser("Wayne Tse", "super-admin")
+
 	v1.Use(authMiddleware())
 	{
 		userV1 := v1.Group("users").Use(permissionMiddleware(e))

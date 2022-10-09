@@ -103,6 +103,7 @@ func run() error {
 
 	db.Migrator().DropTable(&v1.Category{})
 	db.Migrator().CreateTable(&v1.Category{})
+	db.Migrator().CreateTable(&v1.User{})
 
 	node := &v1.Category{
 		Title: "产品类别",
