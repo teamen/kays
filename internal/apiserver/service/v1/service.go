@@ -5,6 +5,7 @@ import "github.com/teamen/kays/internal/apiserver/store"
 type Service interface {
 	Users() UserSrv
 	Categories() CategorySrv
+	Settings() SettingSrv
 }
 
 type service struct {
@@ -23,4 +24,7 @@ func (s *service) Users() UserSrv {
 
 func (s *service) Categories() CategorySrv {
 	return newCategories(s)
+}
+func (s *service) Settings() SettingSrv {
+	return newSettings(s)
 }

@@ -5,3 +5,9 @@ const (
 
 	ErrUserAlreadyExist
 )
+
+const (
+	ErrSettingNotFound = iota + 111001
+
+	ErrSettingSlugDuplicated
+)

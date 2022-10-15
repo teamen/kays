@@ -26,4 +26,11 @@ func init() {
 	register(ErrInvalidYaml, 500, "Data is not valid Yaml")
 	register(ErrEncodingYaml, 500, "Yaml data could not be encoded")
 	register(ErrDecodingYaml, 500, "Yaml data could not be decoded")
+
+	register(ErrInvalidCopy, 500, "Error occurred while copy the request body to the model")
+
+	register(ErrSettingNotFound, 404, "Settinng not found")
+
+	register(ErrSettingSlugDuplicated, 400, "Settinng slug duplicated")
+
 }

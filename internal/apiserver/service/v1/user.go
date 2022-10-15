@@ -5,11 +5,13 @@ import (
 
 	"github.com/teamen/kays/internal/apiserver/store"
 	v1 "github.com/teamen/kays/internal/pkg/model/apiserver/v1"
+	metav1 "github.com/teamen/kays/pkg/meta/v1"
 )
 
 type UserSrv interface {
 	Create(ctx context.Context, user *v1.User) error
 	FindByUsername(ctx context.Context, usernname string) (*v1.User, error)
+	List(ctx context.Context, opts metav1.ListOptions) (*v1.UserList, error)
 }
 
 type userService struct {
@@ -39,4 +41,14 @@ func (u *userService) FindByUsername(ctx context.Context, usernname string) (*v1
 		return nil, err
 	}
 	return user, nil
+}
+
+func (u *userService) List(ctx context.Context, opts metav1.ListOptions) (*v1.UserList, error) {
+	users, err := u.store.Users().List(ctx, opts)
+	if err != nil {
+		// TODO
+		return nil, err
+	}
+	// fmt.Println(users)
+	return users, nil
 }

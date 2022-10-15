@@ -77,4 +77,6 @@ const (
 
 	// ErrDecodingYaml - 500: Yaml data could not be decoded.
 	ErrDecodingYaml
+
+	ErrInvalidCopy
 )

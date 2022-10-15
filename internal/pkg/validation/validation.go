@@ -2,6 +2,7 @@ package validation
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/zh"
@@ -54,7 +55,7 @@ func ParseValidationErrors(validationErrors validator.ValidationErrors, request 
 		// fmt.Println(e.Param())
 		t := reflect.TypeOf(request)
 		field, _ := t.FieldByName(fieldName)
-		j := field.Tag.Get("json")
+		j := strings.Split(field.Tag.Get("json"), ",")[0]
 		out[i] = APIError{j, e.Translate(trans)}
 	}
 	return out, nil

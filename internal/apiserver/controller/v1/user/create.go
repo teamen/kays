@@ -1,8 +1,7 @@
 package user
 
 import (
-	"errors"
-	"net/http"
+	// "errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -10,6 +9,10 @@ import (
 	v1 "github.com/teamen/kays/internal/pkg/model/apiserver/v1"
 	"github.com/teamen/kays/internal/pkg/validation"
 	"github.com/teamen/kays/pkg/auth"
+	"github.com/teamen/kays/pkg/code"
+	"github.com/teamen/kays/pkg/core"
+
+	"github.com/marmotedu/errors"
 )
 
 type CreateUserRequest struct {
@@ -28,17 +31,13 @@ func (u *UserController) Create(ctx *gin.Context) {
 		var validationErrors validator.ValidationErrors
 		if errors.As(err, &validationErrors) {
 			out, _ := validation.ParseValidationErrors(validationErrors, request)
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"errorMessage": out,
-				"errorCode":    100004,
+			core.WriteResponse(ctx, errors.WrapC(err, code.ErrValidation, ""), gin.H{
+				"errors": out,
 			})
 			return
 		}
 
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errorCode":    100003,
-			"errorMessage": "参数错误",
-		})
+		core.WriteResponse(ctx, errors.WithCode(code.ErrBind, ""), nil)
 		return
 	}
 
@@ -49,23 +48,16 @@ func (u *UserController) Create(ctx *gin.Context) {
 	user.Password, err = auth.Encrypt(user.Password)
 
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"errorCode":    100005,
-			"errorMessage": "加密用户密码时发生错误",
-		})
+		core.WriteResponse(ctx, errors.WithCode(code.ErrEncrypt, ""), nil)
 		return
 	}
 
 	if err := u.srv.Users().Create(ctx, &user); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"errorCode":    102001,
-			"errorMessage": err.Error(),
-		})
+		core.WriteResponse(ctx, err, nil)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"user": user,
-	})
+	core.WriteResponse(ctx, nil, user)
+	return
 
 }

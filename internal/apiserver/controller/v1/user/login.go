@@ -1,13 +1,13 @@
 package user
 
 import (
-	"errors"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/marmotedu/errors"
 	"github.com/teamen/kays/internal/pkg/validation"
 	"github.com/teamen/kays/pkg/auth"
+	"github.com/teamen/kays/pkg/code"
+	"github.com/teamen/kays/pkg/core"
 	"github.com/teamen/kays/pkg/token"
 )
 
@@ -24,51 +24,33 @@ func (u *UserController) Login(ctx *gin.Context) {
 		var validationErrors validator.ValidationErrors
 		if errors.As(err, &validationErrors) {
 			out, _ := validation.ParseValidationErrors(validationErrors, request)
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"errorMessage": out,
-				"errorCode":    100004,
+			core.WriteResponse(ctx, errors.WithCode(code.ErrValidation, ""), gin.H{
+				"errors": out,
 			})
 			return
 		}
 
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errorCode":    100003,
-			"errorMessage": "参数错误",
-		})
+		core.WriteResponse(ctx, errors.WrapC(err, code.ErrBind, ""), nil)
 		return
 	}
 
 	user, err := u.srv.Users().FindByUsername(ctx, request.Username)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"errorCode":    "110001",
-			"errorMessage": "用户不存在",
-		})
+		core.WriteResponse(ctx, err, nil)
 		return
 	}
 
 	if err := auth.Compare(user.Password, request.Password); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"errorCode":    "110002",
-			"errorMessage": "密码错误",
-		})
+		core.WriteResponse(ctx, errors.WithCode(code.ErrPasswordIncorrect, ""), nil)
 		return
 	}
 
 	tokenString, err := token.Sign(int(user.ID), user.Username)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"errorCode":    "110003",
-			"errorMessage": "",
-		})
+
+		core.WriteResponse(ctx, errors.WrapC(err, code.ErrEncrypt, ""), nil)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"errorCode":    "0",
-		"errorMessage": "OK",
-		"data": gin.H{
-			"token": tokenString,
-		},
-	})
+	core.WriteResponse(ctx, nil, gin.H{"token": tokenString})
 }

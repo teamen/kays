@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/teamen/kays/internal/apiserver/controller/v1/category"
+	"github.com/teamen/kays/internal/apiserver/controller/v1/setting"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/user"
 
 	"github.com/teamen/kays/internal/apiserver/store/mysql"
@@ -25,26 +26,33 @@ func installController(g *gin.Engine) {
 
 	userController := user.NewUserController(storeIns)
 	categoryController := category.NewCategoryController(storeIns)
+	settingController := setting.NewSettingController(storeIns)
 
 	g.POST("/login", userController.Login)
 
 	v1 := g.Group("v1")
 
-	e := initializeCasbin()
-
-	// e.AddRoleForUser("Wayne Tse", "super-admin")
+	// e := initializeCasbin()
 
 	v1.Use(authMiddleware())
 	{
-		userV1 := v1.Group("users").Use(permissionMiddleware(e))
+		userV1 := v1.Group("users")
+		// .Use(permissionMiddleware(e))
 		{
 			userV1.POST("", userController.Create)
+			userV1.GET("", userController.List)
 
 		}
 
 		categoryV1 := v1.Group("categories")
 		{
 			categoryV1.POST("", categoryController.Create)
+		}
+
+		settingV1 := v1.Group("settings")
+		{
+			settingV1.POST("", settingController.Create)
+			settingV1.GET("", settingController.Get)
 		}
 	}
 

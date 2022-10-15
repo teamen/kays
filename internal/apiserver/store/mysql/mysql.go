@@ -33,6 +33,9 @@ func (ds *datastore) Close() error {
 func (ds *datastore) Users() store.UserStore {
 	return newUser(ds)
 }
+func (ds *datastore) Settings() store.SettingStore {
+	return newSetting(ds)
+}
 
 var (
 	mysqlFactory store.Factory

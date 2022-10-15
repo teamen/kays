@@ -1,13 +1,11 @@
 package migrate
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 
-	nestedset "github.com/longbridgeapp/nested-set"
 	"github.com/mitchellh/go-homedir"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
@@ -101,48 +99,50 @@ func run() error {
 
 	db := mysqlStore.DB()
 
-	db.Migrator().DropTable(&v1.Category{})
-	db.Migrator().CreateTable(&v1.Category{})
-	db.Migrator().CreateTable(&v1.User{})
+	// db.Migrator().DropTable(&v1.Category{})
+	// db.Migrator().CreateTable(&v1.Category{})
+	// db.Migrator().CreateTable(&v1.User{})
+	db.Migrator().DropTable(&v1.Setting{})
+	db.Migrator().CreateTable(&v1.Setting{})
 
-	node := &v1.Category{
-		Title: "产品类别",
-		Slug: "	product-type",
-	}
+	// node := &v1.Category{
+	// 	Title: "产品类别",
+	// 	Slug: "	product-type",
+	// }
 
-	nestedset.Create(db, node, nil)
+	// nestedset.Create(db, node, nil)
 	// nestedset.Create(db, node, nil)
 
 	// var parent v1.Category
 	// db.Model(&v1.Category{}).First(&parent)
 	// fmt.Printf("%+v\n\n", parent)
 
-	child1 := &v1.Category{
-		Title: "镜框",
-		Slug:  "product-type__frame",
-		ParentID: sql.NullInt64{
-			Int64: node.ID,
-			Valid: true,
-		},
-	}
-	fmt.Printf("%+v\n\n", node)
+	// child1 := &v1.Category{
+	// 	Title: "镜框",
+	// 	Slug:  "product-type__frame",
+	// 	ParentID: sql.NullInt64{
+	// 		Int64: node.ID,
+	// 		Valid: true,
+	// 	},
+	// }
+	// fmt.Printf("%+v\n\n", node)
 
 	// fmt.Printf("%+v\n\n", child1)
 	// fmt.Printf("%+v\n\n", child2)
 
-	nestedset.Create(db, child1, node)
+	// nestedset.Create(db, child1, node)
 
-	child2 := &v1.Category{
-		Title: "镜片",
-		Slug:  "product-type__lens",
-		// the nestedset lib need us to hold the parent id ...
-		ParentID: sql.NullInt64{
-			Int64: node.ID,
-			Valid: true,
-		},
-	}
+	// child2 := &v1.Category{
+	// 	Title: "镜片",
+	// 	Slug:  "product-type__lens",
+	// 	// the nestedset lib need us to hold the parent id ...
+	// 	ParentID: sql.NullInt64{
+	// 		Int64: node.ID,
+	// 		Valid: true,
+	// 	},
+	// }
 
-	nestedset.Create(db, child2, node)
+	// nestedset.Create(db, child2, node)
 	// nestedset.MoveTo(db, child2, node, nestedset.MoveDirectionLeft)
 
 	return nil

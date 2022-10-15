@@ -3,6 +3,8 @@ package v1
 import (
 	"database/sql"
 	"time"
+
+	metav1 "github.com/teamen/kays/pkg/meta/v1"
 )
 
 type User struct {
@@ -17,4 +19,9 @@ type User struct {
 	CreatedAt     time.Time    `gorm:"column:created_at;type:timestamp null;" json:"created_at,omitempty"`
 	UpdatedAt     time.Time    `gorm:"column:updated_at;type:timestamp null;" json:"updated_at,omitempty"`
 	DeletedAt     sql.NullTime `gorm:"column:deleted_at;type:timestamp null;" json:"-"`
+}
+
+type UserList struct {
+	metav1.ListMeta `json:",inline"`
+	Items           []*User `json:"items"`
 }
