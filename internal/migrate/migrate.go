@@ -105,8 +105,10 @@ func run() error {
 	// db.Migrator().DropTable(&v1.Setting{})
 	// db.Migrator().CreateTable(&v1.Setting{})
 
-	db.Migrator().DropTable(&v1.Customer{})
-	db.Migrator().CreateTable(&v1.Customer{})
+	db.Migrator().DropTable(&v1.Product{})
+	db.Migrator().CreateTable(&v1.Product{})
+	// db.Migrator().DropTable(&v1.Customer{})
+	// db.Migrator().CreateTable(&v1.Customer{})
 
 	// node := &v1.Category{
 	// 	Title: "产品类别",
