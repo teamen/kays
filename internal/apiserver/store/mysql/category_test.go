@@ -144,9 +144,6 @@ func TestCategoryList(t *testing.T) {
 	for i, c := range categoryList {
 		log.Printf("[%d] %+v\n", i, c)
 	}
-
-	categoryStore.GetNestedCategories(ctx)
-
 }
 
 func init() {
