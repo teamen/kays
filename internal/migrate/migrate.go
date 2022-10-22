@@ -99,14 +99,14 @@ func run() error {
 
 	db := mysqlStore.DB()
 
-	// db.Migrator().DropTable(&v1.Category{})
-	// db.Migrator().CreateTable(&v1.Category{})
+	db.Migrator().DropTable(&v1.Category{})
+	db.Migrator().CreateTable(&v1.Category{})
 	// db.Migrator().CreateTable(&v1.User{})
 	// db.Migrator().DropTable(&v1.Setting{})
 	// db.Migrator().CreateTable(&v1.Setting{})
 
-	db.Migrator().DropTable(&v1.Product{})
-	db.Migrator().CreateTable(&v1.Product{})
+	// db.Migrator().DropTable(&v1.OrderProduct{})
+	// db.Migrator().CreateTable(&v1.OrderProduct{})
 	// db.Migrator().DropTable(&v1.Customer{})
 	// db.Migrator().CreateTable(&v1.Customer{})
 

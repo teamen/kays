@@ -8,6 +8,9 @@ import (
 )
 
 type CategorySrv interface {
+	Create(ctx context.Context, categry *v1.Category) error
+	Get(ctx context.Context, ID int64) (*v1.Category, error)
+	GetBySlug(ctx context.Context, slug string) (category *v1.Category, err error)
 }
 
 type categoryService struct {
@@ -22,6 +25,16 @@ func newCategories(srv *service) *categoryService {
 	}
 }
 
-func (u *categoryService) Create(ctx context.Context, categry *v1.Category) error {
+func (c *categoryService) Create(ctx context.Context, categry *v1.Category) error {
+	// c.store.Categories()
 	return nil
+}
+
+func (c *categoryService) Get(ctx context.Context, ID int64) (category *v1.Category, err error) {
+	return nil, nil
+}
+
+func (c *categoryService) GetBySlug(ctx context.Context, slug string) (category *v1.Category, err error) {
+	return nil, nil
+
 }

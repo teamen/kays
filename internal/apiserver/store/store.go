@@ -7,6 +7,7 @@ var client Factory
 type Factory interface {
 	Users() UserStore
 	Settings() SettingStore
+	// Categories() Cateogry
 	Close() error
 
 	DB() *gorm.DB
