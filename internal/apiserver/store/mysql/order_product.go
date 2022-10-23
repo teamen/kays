@@ -16,9 +16,21 @@ func newOrderProducts(ds *datastore) *orderProducts {
 }
 
 func (op *orderProducts) Create(ctx context.Context, orderProduct *v1.OrderProduct) error {
+	if err := op.db.Create(orderProduct).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
 func (op *orderProducts) Delete(ctx context.Context, orderProductID uint32) error {
-	return nil
+	return op.db.Delete(&v1.OrderProduct{}, "id=?", orderProductID).Error
+}
+
+func (op *orderProducts) List(ctx context.Context, condition map[string]interface{}) ([]*v1.OrderProduct, error) {
+
+	var ret []*v1.OrderProduct
+	if err := op.db.Model(&v1.OrderProduct{}).Where(condition).Find(&ret).Error; err != nil {
+		return nil, err
+	}
+	return ret, nil
 }

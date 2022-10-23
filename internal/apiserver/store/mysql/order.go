@@ -20,7 +20,7 @@ func (o *orders) Create(ctx context.Context, order *v1.Order) error {
 }
 
 func (o *orders) Update(ctx context.Context, order *v1.Order) error {
-	return nil
+	return o.db.Save(order).Error
 }
 
 func (o *orders) Get(ctx context.Context, ID uint32) (*v1.Order, error) {
@@ -29,5 +29,4 @@ func (o *orders) Get(ctx context.Context, ID uint32) (*v1.Order, error) {
 		return nil, err
 	}
 	return &order, nil
-
 }
