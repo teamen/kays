@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"testing"
 
 	v1 "github.com/teamen/kays/internal/pkg/model/apiserver/v1"
@@ -137,12 +138,24 @@ func TestCategoryList(t *testing.T) {
 		t.Fatalf("failed to list nodes: %v", err)
 	}
 
-	t.Logf("%+v", categoryList)
-
 	log.Printf("\n\n")
 
-	for i, c := range categoryList {
-		log.Printf("[%d] %+v\n", i, c)
+	categoryList = categoryList.ToTree()
+	fmt.Printf("%v\n\n\n", categoryList)
+	for _, c := range categoryList {
+		nestedsetDump(c)
+	}
+
+}
+
+func nestedsetDump(node *v1.Category) {
+
+	log.Printf("%s%d-%s\n", strings.Repeat("--", node.Depth), node.ID, node.Title)
+
+	if len(node.Children) > 0 {
+		for _, child := range node.Children {
+			nestedsetDump(child)
+		}
 	}
 }
 
