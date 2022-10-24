@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/teamen/kays/internal/apiserver/controller/v1/category"
+	"github.com/teamen/kays/internal/apiserver/controller/v1/order"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/setting"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/user"
 
@@ -27,6 +28,7 @@ func installController(g *gin.Engine) {
 	userController := user.NewUserController(storeIns)
 	categoryController := category.NewCategoryController(storeIns)
 	settingController := setting.NewSettingController(storeIns)
+	orderController := order.NewOrderController(storeIns)
 
 	g.POST("/login", userController.Login)
 
@@ -53,6 +55,12 @@ func installController(g *gin.Engine) {
 		{
 			settingV1.POST("", settingController.Create)
 			settingV1.GET("", settingController.Get)
+		}
+
+		orderV1 := v1.Group("orders")
+		{
+			orderV1.POST("", orderController.Create)
+			orderV1.PATCH(":id", orderController.Update)
 		}
 	}
 
