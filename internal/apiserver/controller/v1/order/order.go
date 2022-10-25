@@ -2,9 +2,13 @@ package order
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"github.com/jinzhu/copier"
 	"github.com/marmotedu/errors"
 	srvv1 "github.com/teamen/kays/internal/apiserver/service/v1"
 	"github.com/teamen/kays/internal/apiserver/store"
+	v1 "github.com/teamen/kays/internal/pkg/model/apiserver/v1"
+	"github.com/teamen/kays/internal/pkg/validation"
 	"github.com/teamen/kays/pkg/code"
 	"github.com/teamen/kays/pkg/core"
 )
@@ -34,13 +38,29 @@ type UpdateOrderRequest struct {
 func (ctrl *OrderController) Create(ctx *gin.Context) {
 	var r CreateOrderRequest
 	if err := ctx.ShouldBindJSON(&r); err != nil {
+		var validationErrors validator.ValidationErrors
+		if errors.As(err, &validationErrors) {
+			out, _ := validation.ParseValidationErrors(validationErrors, r)
+			core.WriteResponse(ctx, errors.WrapC(err, code.ErrValidation, ""), gin.H{
+				"errors": out,
+			})
+			return
+		}
+
 		core.WriteResponse(ctx, errors.WithCode(code.ErrBind, ""), nil)
 		return
 	}
 
-	// TODO
+	var order v1.Order
 
-	core.WriteResponse(ctx, nil, r)
+	copier.Copy(&order, &r)
+
+	if err := ctrl.srv.Orders().Create(ctx, &order); err != nil {
+		core.WriteResponse(ctx, errors.WithCode(code.ErrDatabase, ""), nil)
+		return
+	}
+
+	core.WriteResponse(ctx, nil, order)
 	return
 }
 

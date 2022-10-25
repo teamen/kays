@@ -33,7 +33,7 @@ type OrderProduct struct {
 	FrameMaterialFee uint32 `gorm:"not null;default:0;comment:镜架物料费"`
 
 	LensID          uint32 `gorm:"not null;default:0;comment:镜片产品ID"`
-	LennsName       string `gorm:"size:64;not null;default:'';comment:镜片产品名称"`
+	LensName        string `gorm:"size:64;not null;default:'';comment:镜片产品名称"`
 	LensProcessFee  uint32 `gorm:"not null;default:0;comment:镜片加工费"`
 	LensMaterialFee uint32 `gorm:"not null;default:0;comment:镜片物料费"`
 	LensQuantity    uint8  `gorm:"not null;default:0;comment:镜片数量"`

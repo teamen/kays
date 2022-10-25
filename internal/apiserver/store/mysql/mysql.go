@@ -37,6 +37,10 @@ func (ds *datastore) Settings() store.SettingStore {
 	return newSetting(ds)
 }
 
+func (ds *datastore) Orders() store.OrderStore {
+	return newOrders(ds)
+}
+
 var (
 	mysqlFactory store.Factory
 	once         sync.Once
