@@ -33,4 +33,7 @@ func init() {
 
 	register(ErrSettingSlugDuplicated, 400, "Settinng slug duplicated")
 
+	register(ErrCustomerNotFound, 404, "Customer not found")
+	register(ErrProductNotFound, 404, "Product not found")
+
 }

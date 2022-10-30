@@ -41,6 +41,14 @@ func (ds *datastore) Orders() store.OrderStore {
 	return newOrders(ds)
 }
 
+func (ds *datastore) Customers() store.CustomerStore {
+	return newCustomer(ds)
+}
+
+func (ds *datastore) Products() store.ProductStore {
+	return newProduct(ds)
+}
+
 var (
 	mysqlFactory store.Factory
 	once         sync.Once

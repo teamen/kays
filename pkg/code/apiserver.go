@@ -11,3 +11,11 @@ const (
 
 	ErrSettingSlugDuplicated
 )
+
+const (
+	ErrCustomerNotFound = iota + 111101
+)
+
+const (
+	ErrProductNotFound = iota + 111201
+)

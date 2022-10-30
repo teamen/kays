@@ -2,12 +2,16 @@ package mysql
 
 import (
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 
 	v1 "github.com/teamen/kays/internal/pkg/model/apiserver/v1"
 	"github.com/teamen/kays/internal/pkg/util/gormutil"
+	"github.com/teamen/kays/pkg/code"
 	metav1 "github.com/teamen/kays/pkg/meta/v1"
+
+	merrors "github.com/marmotedu/errors"
 )
 
 const (
@@ -36,8 +40,8 @@ func (p *products) Create(ctx context.Context, product *v1.Product) error {
 func (p *products) Get(ctx context.Context, ID uint32) (*v1.Product, error) {
 
 	var product v1.Product
-	if err := p.db.Model(&v1.Product{}).First(&product).Error; err != nil {
-		return nil, err
+	if err := p.db.Model(&v1.Product{}).First(&product, "id=?", ID).Error; err != nil {
+		return nil, merrors.WrapC(err, code.ErrProductNotFound, "未找到产品[%v]", ID)
 	}
 	return &product, nil
 }
@@ -61,5 +65,9 @@ func (p *products) Update(ctx context.Context, product *v1.Product) error {
 }
 
 func (p *products) Delete(ctx context.Context, ID uint32) error {
-	return p.db.Delete(&v1.Product{}, "ID=?", ID).Error
+	err := p.db.Delete(&v1.Product{}, "ID=?", ID).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return merrors.WrapC(err, code.ErrUserNotFound, "未找到产品[%v]", ID)
+	}
+	return nil
 }

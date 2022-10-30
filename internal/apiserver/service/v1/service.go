@@ -7,6 +7,8 @@ type Service interface {
 	Categories() CategorySrv
 	Settings() SettingSrv
 	Orders() OrderSrv
+	Customers() CustomerSrv
+	Products() ProductSrv
 }
 
 type service struct {
@@ -17,6 +19,9 @@ func NewService(store store.Factory) Service {
 	return &service{
 		store,
 	}
+}
+func (s *service) Products() ProductSrv {
+	return newProducts(s)
 }
 
 func (s *service) Users() UserSrv {
@@ -32,4 +37,8 @@ func (s *service) Settings() SettingSrv {
 
 func (s *service) Orders() OrderSrv {
 	return newOrders(s)
+}
+
+func (s *service) Customers() CustomerSrv {
+	return newCustomers(s)
 }

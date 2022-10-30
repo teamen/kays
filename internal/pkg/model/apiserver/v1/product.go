@@ -8,7 +8,8 @@ import (
 )
 
 type Product struct {
-	ID               uint32       `gorm:"primaryKey;unsigned;not null;comment:产品ID" json:"id"`
+	ID uint32 `gorm:"primaryKey;unsigned;not null;comment:产品ID" json:"id"`
+
 	Name             string       `gorm:"size:64;not null;default:'';comment:产品名称" json:"name"`
 	Fullname         string       `gorm:"size:255;not null;default:'';comment:产品全名" json:"fullname"`
 	Code             string       `gorm:"size:32;not null;default:'';comment:产品编码" json:"code"`
@@ -22,7 +23,7 @@ type Product struct {
 	ExtraFee         uint32       `gorm:"unsigned;not null;default:0;comment:附加费，按镜架数量算" json:"extra_fee"`
 	CreatedAt        time.Time    `gorm:"column:created_at;type:timestamp null;" json:"created_at"`
 	UpdatedAt        time.Time    `gorm:"column:updated_at;type:timestamp null;" json:"updated_at"`
-	DeletedAt        sql.NullTime `gorm:"column:deleted_at;type:timestamp null;" json:"-,omitempty"`
+	DeletedAt        sql.NullTime `gorm:"column:deleted_at;type:timestamp null;" json:"-"`
 }
 
 type ProductList struct {

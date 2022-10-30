@@ -8,6 +8,7 @@ import (
 
 	"github.com/teamen/kays/internal/apiserver/controller/v1/category"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/order"
+	"github.com/teamen/kays/internal/apiserver/controller/v1/product"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/setting"
 	"github.com/teamen/kays/internal/apiserver/controller/v1/user"
 
@@ -29,6 +30,7 @@ func installController(g *gin.Engine) {
 	categoryController := category.NewCategoryController(storeIns)
 	settingController := setting.NewSettingController(storeIns)
 	orderController := order.NewOrderController(storeIns)
+	productController := product.NewProductController(storeIns)
 
 	g.POST("/login", userController.Login)
 
@@ -62,6 +64,16 @@ func installController(g *gin.Engine) {
 			orderV1.POST("", orderController.Create)
 			orderV1.PATCH(":id", orderController.Update)
 		}
+
+		productV1 := v1.Group("products")
+		{
+			productV1.POST("", productController.Create)
+			productV1.PATCH(":id", productController.Update)
+			productV1.GET(":id", productController.Get)
+			productV1.GET("", productController.List)
+			productV1.DELETE(":id", productController.Delete)
+		}
+
 	}
 
 }

@@ -8,6 +8,8 @@ type Factory interface {
 	Users() UserStore
 	Settings() SettingStore
 	Orders() OrderStore
+	Customers() CustomerStore
+	Products() ProductStore
 	Close() error
 
 	DB() *gorm.DB

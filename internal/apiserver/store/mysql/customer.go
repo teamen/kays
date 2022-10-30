@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 
+	"github.com/teamen/kays/internal/apiserver/store"
 	v1 "github.com/teamen/kays/internal/pkg/model/apiserver/v1"
 	"github.com/teamen/kays/internal/pkg/util/gormutil"
 	metav1 "github.com/teamen/kays/pkg/meta/v1"
@@ -13,6 +14,8 @@ const (
 	CUSTOMER_STATUS_DISABLED int = iota + 0
 	CUSTOMER_STATUS_ACTIVE
 )
+
+var _ store.CustomerStore = (*customers)(nil)
 
 type customers struct {
 	db *gorm.DB
