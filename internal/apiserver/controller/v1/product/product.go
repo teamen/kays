@@ -178,12 +178,11 @@ func (ctrl *ProductController) List(ctx *gin.Context) {
 }
 
 func (ctrl *ProductController) Delete(ctx *gin.Context) {
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	id, _ := strconv.ParseUint(ctx.Param("id"), 10, 64)
 
+	_, err := ctrl.srv.Products().Get(ctx, uint32(id))
 	if err != nil {
-		core.WriteResponse(ctx, errors.WithCode(code.ErrValidation, ""), gin.H{
-			"errors": "invalid param id",
-		})
+		core.WriteResponse(ctx, err, nil)
 		return
 	}
 

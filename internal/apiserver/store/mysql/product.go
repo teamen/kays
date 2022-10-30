@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 
@@ -66,8 +67,13 @@ func (p *products) Update(ctx context.Context, product *v1.Product) error {
 
 func (p *products) Delete(ctx context.Context, ID uint32) error {
 	err := p.db.Delete(&v1.Product{}, "ID=?", ID).Error
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return merrors.WrapC(err, code.ErrUserNotFound, "未找到产品[%v]", ID)
+
+	fmt.Printf("%v", err)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return merrors.WrapC(err, code.ErrUserNotFound, "未找到产品[%v]", ID)
+		}
+		return err
 	}
 	return nil
 }
